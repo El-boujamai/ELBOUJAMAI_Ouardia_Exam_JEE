@@ -10,6 +10,7 @@ import org.ouardia.examanjee.reposetory.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,12 @@ public class AssuranceServiceImpl implements IAssuranceService {
 
     @Override
     public List<ContratAutoDTO> getContratsAutoByClient(Long clientId) {
-        return contratRepository.findByClientId(clientId).stream()
+        // Correction ici : Assurez-vous que l'appel retourne une List
+        List<ContratAssurance> contrats = contratRepository.findByClientId(clientId);
+
+        if (contrats == null) return new ArrayList<>();
+
+        return contrats.stream()
                 .filter(c -> c instanceof ContratAuto)
                 .map(c -> mapper.fromContratAuto((ContratAuto) c))
                 .collect(Collectors.toList());
